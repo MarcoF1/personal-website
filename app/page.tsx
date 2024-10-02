@@ -52,7 +52,7 @@ export default function Page() {
         <section id="about">
           <h2 className="text-2xl font-bold mb-4">About Me</h2>
           <p className="mb-4">
-            I've worked on{" "}
+            I&apos;ve worked on{" "}
             <a
               href="https://news.mit.edu/2019/students-developing-ai-tools-all-0523"
               target="_blank"
@@ -133,8 +133,8 @@ export default function Page() {
             </li>
             <li>
               <strong>Posture Buddy (May 2021):</strong> We trained a neural
-              network that took readings from RFID tags on people's backs in
-              conjunction with a computer vision model (
+              network that took readings from RFID tags on people&apos;s backs
+              in conjunction with a computer vision model (
               <a
                 href="https://github.com/CMU-Perceptual-Computing-Lab/openpose"
                 target="_blank"
