@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Mail, Github, Linkedin, Globe } from "lucide-react";
+import { Mail, Github, Linkedin } from "lucide-react";
 
 export default function Page() {
   return (
