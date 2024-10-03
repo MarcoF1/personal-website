@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Mail, Github, Linkedin } from "lucide-react";
 
+// TODO: write a blog post, link to resume when ready, favicon and text at the tab
 export default function Page() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-8 font-serif">
@@ -46,7 +47,7 @@ export default function Page() {
             </li>
             <li>
               <Link
-                href="https://drive.google.com/file/d/1SD4NdY2xXFhlDtD5IV0MkBpqRd672x7l/view?usp=sharing"
+                href="https://docs.google.com/document/d/1emBwWWpQdxsCUZiW_EDJP8pW0mCeXe73F7VVF9vANOw/edit?usp=sharing"
                 target="_blank"
                 className="text-blue-600 hover:underline"
               >
