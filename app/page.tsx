@@ -44,6 +44,15 @@ export default function Page() {
                 Contact
               </Link>
             </li>
+            <li>
+              <Link
+                href="https://drive.google.com/file/d/1SD4NdY2xXFhlDtD5IV0MkBpqRd672x7l/view?usp=sharing"
+                target="_blank"
+                className="text-blue-600 hover:underline"
+              >
+                Resume
+              </Link>
+            </li>
           </ul>
         </nav>
       </header>
