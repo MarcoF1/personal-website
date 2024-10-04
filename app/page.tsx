@@ -203,10 +203,10 @@ export default function Page() {
           </ul>
         </section>
 
-        <section id="blog">
+        {/* <section id="blog">
           <h2 className="text-2xl font-bold mb-4">Blog</h2>
           Coming soon
-          {/* <div className="space-y-4">
+          <div className="space-y-4">
             <article>
               <h3 className="text-xl font-semibold mb-2">
                 <Link href="#" className="text-blue-600 hover:underline">
@@ -223,8 +223,8 @@ export default function Page() {
             <Link href="#" className="text-blue-600 hover:underline">
               View all blog posts →
             </Link>
-          </div> */}
-        </section>
+          </div>
+        </section> */}
 
         <section id="contact">
           <h2 className="text-2xl font-bold mb-4">Contact</h2>
