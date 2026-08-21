@@ -6,8 +6,8 @@ export function GET() {
   return new Response(siteMarkdown, {
     headers: {
       "Content-Type": "text/markdown; charset=utf-8",
-      Vary: "Accept, Accept-Encoding",
-      "Cache-Control": "public, max-age=0, must-revalidate",
+      Vary: "Accept",
+      "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400",
     },
   });
 }
