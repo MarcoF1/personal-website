@@ -28,8 +28,12 @@ function quality(accept: string, type: string): number {
 }
 
 function prefersMarkdown(accept: string): boolean {
+  // Must name text/markdown outright. A client that also sends */* is telling
+  // us it will take anything, and HTML is the canonical representation.
   if (!/(^|,)\s*text\/markdown\b/i.test(accept)) return false;
-  return quality(accept, "text/markdown") > quality(accept, "text/html");
+  if (/(^|,)\s*\*\/\*/.test(accept)) return false;
+  const html = quality(accept, "text/html");
+  return html < 0 || quality(accept, "text/markdown") >= html;
 }
 
 export function middleware(request: NextRequest) {
