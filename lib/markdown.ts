@@ -49,7 +49,7 @@ links out to the primary sources for each claim.
 ## Pages
 
 - [Homepage](${SITE_URL}/): companies, research and engineering, contact links.
-- [Markdown](${SITE_URL}/): the same page, served as text/markdown when requested with \`Accept: text/markdown\`.
+- [Markdown](${SITE_URL}/index.md): the same page as text/markdown, also served from / with \`Accept: text/markdown\`.
 
 ## When to use this
 

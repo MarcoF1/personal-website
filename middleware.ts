@@ -1,54 +1,120 @@
 import { NextRequest, NextResponse } from "next/server";
 
-// Serve the markdown mirror only when a client explicitly asks for markdown
-// and ranks it above HTML. A bare "*/*" means "anything", not "markdown".
-const KNOWN_PATHS = new Set([
-  "/",
-  "/index.md",
-  "/llms.txt",
-  "/robots.txt",
-  "/sitemap.xml",
-  "/404.md",
-]);
+// Markdown content negotiation, per acceptmarkdown.com's Next.js recipe.
+// The Vary: Accept header must survive onto both branches, and Vercel's edge
+// cache only honors Vary when s-maxage puts it in shared-cache mode (see the
+// Cache-Control headers in vercel.json and app/index.md/route.ts).
+const PRODUCES = ["text/html", "text/markdown"];
 
-function quality(accept: string, type: string): number {
-  const [group] = type.split("/");
-  let best = -1;
-  for (const part of accept.split(",")) {
-    const [raw, ...params] = part.trim().split(";");
-    const media = raw.trim().toLowerCase();
-    if (media !== type && media !== `${group}/*` && media !== "*/*") continue;
-    const q = params.reduce((acc, param) => {
-      const [key, value] = param.split("=").map((x) => x.trim());
-      return key === "q" ? Number.parseFloat(value) : acc;
-    }, 1);
-    if (q > best) best = q;
+type AcceptEntry = { type: string; q: number; specificity: number };
+
+function parseAccept(header: string): AcceptEntry[] {
+  return header
+    .split(",")
+    .map((raw) => {
+      const parts = raw
+        .trim()
+        .split(";")
+        .map((s) => s.trim());
+      const type = parts[0].toLowerCase();
+      let q = 1;
+      for (const param of parts.slice(1)) {
+        const [name, value] = param.split("=").map((s) => s.trim());
+        if (name === "q") {
+          const parsed = Number(value);
+          if (!Number.isNaN(parsed)) q = Math.max(0, Math.min(1, parsed));
+        }
+      }
+      const specificity = type === "*/*" ? 0 : type.endsWith("/*") ? 1 : 2;
+      return { type, q, specificity };
+    })
+    .filter((entry) => entry.type.length > 0);
+}
+
+function matches(entry: AcceptEntry, produced: string): boolean {
+  if (entry.type === "*/*") return true;
+  if (entry.type.endsWith("/*")) {
+    return produced.split("/")[0] === entry.type.split("/")[0];
+  }
+  return entry.type === produced;
+}
+
+function preferredType(header: string | null): string | null {
+  if (!header) return "text/html";
+  const entries = parseAccept(header);
+  if (entries.length === 0) return "text/html";
+
+  let best: string | null = null;
+  let bestQ = 0;
+  let bestSpecificity = -1;
+
+  for (const produced of PRODUCES) {
+    for (const entry of entries) {
+      if (!matches(entry, produced)) continue;
+      if (entry.q === 0) continue;
+      if (
+        entry.q > bestQ ||
+        (entry.q === bestQ && entry.specificity > bestSpecificity)
+      ) {
+        best = produced;
+        bestQ = entry.q;
+        bestSpecificity = entry.specificity;
+      }
+    }
   }
   return best;
 }
 
-function prefersMarkdown(accept: string): boolean {
-  // Must name text/markdown outright. A client that also sends */* is telling
-  // us it will take anything, and HTML is the canonical representation.
-  if (!/(^|,)\s*text\/markdown\b/i.test(accept)) return false;
-  if (/(^|,)\s*\*\/\*/.test(accept)) return false;
-  const html = quality(accept, "text/html");
-  return html < 0 || quality(accept, "text/markdown") >= html;
+function appendVaryAccept(headers: Headers): void {
+  const existing = headers.get("Vary");
+  if (!existing) {
+    headers.set("Vary", "Accept");
+    return;
+  }
+  const tokens = existing.split(",").map((s) => s.trim().toLowerCase());
+  if (!tokens.includes("accept")) {
+    headers.set("Vary", `${existing}, Accept`);
+  }
 }
 
+const MARKDOWN_PATHS = new Set(["/index.md", "/404.md", "/llms.txt"]);
+
 export function middleware(request: NextRequest) {
-  const accept = request.headers.get("accept") ?? "";
-  if (!prefersMarkdown(accept)) return NextResponse.next();
-
   const { pathname } = request.nextUrl;
-  if (KNOWN_PATHS.has(pathname) && pathname !== "/") return NextResponse.next();
 
-  const target = pathname === "/" ? "/index.md" : "/404.md";
-  const response = NextResponse.rewrite(new URL(target, request.url));
-  response.headers.set("Vary", "Accept, Accept-Encoding");
+  // These already are the markdown representation. Serve them as-is.
+  if (MARKDOWN_PATHS.has(pathname) || pathname === "/robots.txt") {
+    return NextResponse.next();
+  }
+
+  const acceptHeader = request.headers.get("accept");
+  const chosen = preferredType(acceptHeader);
+
+  if (chosen === "text/markdown") {
+    const target = pathname === "/" ? "/index.md" : "/404.md";
+    const rewritten = NextResponse.rewrite(new URL(target, request.url));
+    appendVaryAccept(rewritten.headers);
+    return rewritten;
+  }
+
+  if (chosen === null && acceptHeader) {
+    return new Response(
+      "Not Acceptable\n\nAvailable: text/html, text/markdown\n",
+      {
+        status: 406,
+        headers: {
+          "Content-Type": "text/plain; charset=utf-8",
+          Vary: "Accept",
+        },
+      },
+    );
+  }
+
+  const response = NextResponse.next();
+  appendVaryAccept(response.headers);
   return response;
 }
 
 export const config = {
-  matcher: "/((?!_next/static|_next/image|favicon.ico|marco.jpeg).*)",
+  matcher: ["/((?!api/|_next/|_vercel/|favicon.ico|marco.jpeg).*)"],
 };

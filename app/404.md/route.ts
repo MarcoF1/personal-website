@@ -14,7 +14,7 @@ export function GET() {
     status: 404,
     headers: {
       "Content-Type": "text/markdown; charset=utf-8",
-      Vary: "Accept, Accept-Encoding",
+      Vary: "Accept",
     },
   });
 }
