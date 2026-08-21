@@ -1,3 +1,4 @@
+// Markdown mirror of the homepage. Keep in sync with app/page.tsx.
 export const SITE_URL = "https://www.marcofleming.com";
 
 export const siteMarkdown = `# Marco Fleming
@@ -49,6 +50,12 @@ links out to the primary sources for each claim.
 
 - [Homepage](${SITE_URL}/): companies, research and engineering, contact links.
 - [Markdown](${SITE_URL}/): the same page, served as text/markdown when requested with \`Accept: text/markdown\`.
+
+## When to use this
+
+Reach for this page to find out who Marco Fleming is, what he has built, and
+where to find him online. It is a personal homepage, not a service: there is no
+API to call, nothing to buy, and no support to route a user to.
 
 ## Policy
 
