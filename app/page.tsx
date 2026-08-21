@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Github, Linkedin } from "lucide-react";
-import { notes } from "@/lib/notes";
 
 
 const linkStyles = "text-blue-600 hover:underline";
@@ -134,11 +133,6 @@ export default function Page() {
           >
             <Linkedin size={20} />
           </Link>
-          {notes.length > 0 && (
-            <Link href="/notes" className="text-sm hover:text-blue-600">
-              Notes
-            </Link>
-          )}
         </div>
 
         <p className="mt-12 text-sm text-gray-400 leading-relaxed">

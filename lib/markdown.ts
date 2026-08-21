@@ -1,5 +1,3 @@
-// Plain-text mirror of the homepage, served at / via Accept: text/markdown
-// negotiation and at /llms.txt. Keep in sync with app/page.tsx.
 export const SITE_URL = "https://www.marcofleming.com";
 
 export const siteMarkdown = `# Marco Fleming

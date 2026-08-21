@@ -1,7 +1,5 @@
 import type { MetadataRoute } from "next";
 
-// Agents fetching on behalf of a person are welcome. Bulk training crawlers
-// are not. This is the honor system, but it should at least be stated.
 const TRAINING_CRAWLERS = [
   "GPTBot",
   "CCBot",
