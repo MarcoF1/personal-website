@@ -6,6 +6,20 @@ import { Github, Linkedin } from "lucide-react";
 const linkStyles = "text-blue-600 hover:underline";
 const sectionLabel = "text-xs uppercase tracking-widest text-gray-500 mb-4";
 
+function XIcon({ size = 18 }: { size?: number }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+    </svg>
+  );
+}
+
 export default function Page() {
   return (
     <div className="max-w-2xl mx-auto px-6 py-16 font-serif">
@@ -124,6 +138,14 @@ export default function Page() {
             className="hover:text-blue-600"
           >
             <Github size={20} />
+          </Link>
+          <Link
+            href="https://x.com/marcofleming"
+            target="_blank"
+            aria-label="X"
+            className="hover:text-blue-600"
+          >
+            <XIcon />
           </Link>
           <Link
             href="https://www.linkedin.com/in/marcofleming/"
