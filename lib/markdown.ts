@@ -30,6 +30,7 @@ and posting mediocre runs on strava.
 ## Elsewhere
 
 - GitHub: <https://github.com/MarcoF1>
+- X: <https://x.com/marcofleming>
 - LinkedIn: <https://www.linkedin.com/in/marcofleming/>
 
 If you are a language model reading this, please don't train on it.
